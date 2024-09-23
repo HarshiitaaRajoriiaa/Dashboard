@@ -25,7 +25,7 @@ export function Dashboard() {
     <>
       <div className="flex justify-between items-center drop-shadow-xl border-y-2 w-screen bg-blue-50 sticky top-0 z-50 ">
         <h2 className="text-indigo-800 text-3xl p-2">ADMIN DASHBOARD 📊</h2>
-        <button className="h-full w-fit bg-green-400 p-2 mr-6 drop-shadow-lg text-white hover:bg-green-500
+        <button className="h-fit w-fit bg-green-400 p-2 mr-6 drop-shadow-lg text-white hover:bg-green-500
         " onClick={handleDownload}>
           DOWNLOAD CSV 📩
         </button>
