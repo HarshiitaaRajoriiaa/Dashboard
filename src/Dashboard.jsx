@@ -1,25 +1,18 @@
 import React from "react";
+import axios from "axios";
+
 export function Dashboard() {
-  const handleDownload=()=>{
-    const url = "https://maharastra-backend.vercel.app/download-csv";
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-     .then((response) => response.blob())
-     .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "maharastra_survey_data.csv";
-        document.body.appendChild(a);
-        a.click();
-      })
-     .catch((err) => {
-        console.error("Error downloading the CSV file:", err);
-      });
+  const handleDownload=async ()=>{
+  try {
+    const response = await axios.get('https://maharastra-backend.vercel.app/download-csv');
+    const downloadLink = response.data.downloadUrl;
+    // setDownloadUrl(downloadLink);
+    
+    // Redirect the user to the download URL
+    window.location.href = downloadLink;
+  } catch (error) {
+    console.error("Error fetching the download URL", error);
+    }
   }
   return (
     <>
