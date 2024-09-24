@@ -1,18 +1,48 @@
 import React from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 export function Dashboard() {
+  const [ageCount, setAgeCount] = useState({
+    "GenZ": 0,
+    "Millennials": 0,
+    "GenX": 0,
+    "Baby Boomers": 0,
+    "Silent Generation": 0,
+  });
+  const [totalSurveys, setTotalSurveys] = useState(0);
+  const [regionCount, setRegionCount] = useState({
+    "Mumbai": 0,
+    "Konkan Division": 0,
+    "Nashik Division": 0,
+    "Pune Division": 0,
+    "Aurangabad Division": 0,
+    "Nagpur": 0,
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "https://maharastra-backend-pbek.vercel.app/get-data"
+        );
+        const data = response.data;
+        setTotalSurveys(data.totalNoOfEntries); // Set total survey count
+        setRegionCount(data.districtCount); // Set region count
+        setAgeCount(data.ageCount); // Set the data in the state
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
   const handleDownload=async ()=>{
   try {
     const response = await axios.get('https://maharastra-backend.vercel.app/download-csv');
     const downloadLink = response.data.downloadUrl;
-    // setDownloadUrl(downloadLink);
-    
-    // Redirect the user to the download URL
     window.location.href = downloadLink;
   } catch (error) {
     console.error("Error fetching the download URL", error);
-    }
+  }
   }
   return (
     <>
@@ -30,7 +60,7 @@ export function Dashboard() {
           </span>
         </div>
         <div className="bg-teal-600 py-3 text-white rounded-md flex items-center justify-center text-3xl font-bold shadow-md">
-          xyx
+        {totalSurveys}
         </div>
       </div>
 
@@ -40,23 +70,23 @@ export function Dashboard() {
           <h1 className="text-3xl text-indigo-800">REGION-🗺️</h1>
           <div className="flex flex-wrap justify-center">
             {[
-              "MUMBAI",
-              "KONKAN DIVISION",
-              "NASHIK DIVISION",
-              "PUNE DIVISION",
-              "AURANGABAD DIVISION",
-              "NAGPUR",
-            ].map((region) => (
-              <div
-                key={region}
-                className="w-56 h-40 bg-blue-50 p-4 m-3 rounded-md shadow-lg flex-col text-center text-gray-700 font-light text-lg"
-              >
-                {region}
-                <div className="bg-indigo-500 rounded-md h-16 text-white flex items-center justify-center mt-3 text-2xl shadow-sm">
-                  xyx
+                "Mumbai",
+                "Konkan Division",
+                "Nashik Division",
+                "Pune Division",
+                "Aurangabad Division",
+                "Nagpur",
+              ].map((region) => (
+                <div
+                  key={region}
+                  className="w-56 h-40 bg-blue-50 p-4 m-3 rounded-md shadow-lg flex-col text-center text-gray-700 font-light text-lg"
+                >
+                  {region.toUpperCase()} {/* Region name */}
+                  <div className="bg-indigo-500 rounded-md h-16 text-white flex items-center justify-center mt-3 text-2xl shadow-sm">
+                    {regionCount[region] || 0} {/* Display region count */}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
@@ -66,19 +96,23 @@ export function Dashboard() {
         <div className="w-5/6 bg-gray-50 p-4 m-4 rounded-md shadow-lg flex-col text-center text-gray-700 font-light text-xl">
           <h1 className="text-3xl text-indigo-800">AGE GROUPS-🔢</h1>
           <div className="flex flex-wrap justify-center">
-            {["BELOW 18", "18-29", "30-44", "45-59", "60 AND ABOVE"].map(
-              (ageGroup) => (
-                <div
-                  key={ageGroup}
-                  className="w-56 h-40 bg-slate-50 p-4 m-3 rounded-md shadow-lg flex-col text-center text-gray-700 font-light text-lg"
-                >
-                  {ageGroup}
-                  <div className="bg-indigo-500 rounded-md h-16 text-white flex items-center justify-center mt-3 text-2xl shadow-sm">
-                    xyx
-                  </div>
+            {[
+              "GenZ",
+              "Millennials",
+              "GenX",
+              "Baby Boomers",
+              "Silent Generation",
+            ].map((generation) => (
+              <div
+                key={generation}
+                className="w-56 h-40 bg-slate-50 p-4 m-3 rounded-md shadow-lg flex-col text-center text-gray-700 font-light text-lg"
+              >
+                {generation}
+                <div className="bg-indigo-500 rounded-md h-16 text-white flex items-center justify-center mt-3 text-2xl shadow-sm">
+                  {ageCount[generation] || 0} {/* Display the actual value */}
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -105,6 +139,7 @@ export function Dashboard() {
                 </div>
               </div>
             ))}
+
           </div>
         </div>
       </div>
